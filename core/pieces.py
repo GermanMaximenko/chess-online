@@ -8,6 +8,10 @@ def get_position_indeces(position):
     return COLUMNS.index(position[0]), ROWS.index(position[1])
 
 
+def get_piece_color(piece):
+    return 'black' if piece.islower() else 'white'
+
+
 def get_rook_steps(position):
     """
     :param position:
@@ -28,7 +32,7 @@ def get_knight_steps(position):
     steps = set()
     cols = '  ' + COLUMNS + '  '
     rows = '  ' + ROWS + '  '
-    index_col, index_row = get_position_indeces(position)
+    index_col, index_row = cols.index(position[0]), rows.index(position[1])
 
     buff = [cols[index_col - 2] + rows[index_row + 1], cols[index_col - 2] + rows[index_row - 1],
             cols[index_col - 1] + rows[index_row + 2], cols[index_col - 1] + rows[index_row - 2],
@@ -127,3 +131,20 @@ def get_pawn_steps(position, color):
     return steps
 
 
+def get_piece_step(piece, position):
+    color = get_piece_color(piece)
+    piece = piece.lower()
+    if piece == 'p':
+        return get_pawn_steps(position, color)
+    elif piece == 'r':
+        return get_rook_steps(position)
+    elif piece == 'n':
+        return get_knight_steps(position)
+    elif piece == 'b':
+        return get_bishop_steps(position)
+    elif piece == 'q':
+        return get_queen_steps(position)
+    elif piece == 'k':
+        return get_king_steps(position, color)
+
+print(get_piece_step('k', 'e4'))
