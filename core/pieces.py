@@ -147,4 +147,3 @@ def get_piece_step(piece, position):
     elif piece == 'k':
         return get_king_steps(position, color)
 
-print(get_piece_step('k', 'e4'))
