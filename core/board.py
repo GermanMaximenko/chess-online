@@ -40,8 +40,7 @@ class Field:
         return self.available_moves
 
     def reset_available_moves(self):
-        del self.available_moves
-        self.available_moves = set([])
+        self.available_moves.clear()
 
     def __str__(self):
         return self.piece
