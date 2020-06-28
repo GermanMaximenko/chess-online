@@ -20,11 +20,11 @@ from collections import Counter
 class Field:
     available_moves = set([])
     count_attack = 0
-    name = None
+    position = None
     figure = None
 
-    def __init__(self, name, figure):
-        self.name = name
+    def __init__(self, position, figure):
+        self.position = position
         self.figure = figure
 
     def set_figure(self, figure):
@@ -42,6 +42,9 @@ class Field:
     def reset_available_moves(self):
         del self.available_moves
         self.available_moves = set([])
+
+    def __str__(self):
+        return self.figure
 
 
 class Board:
@@ -77,6 +80,23 @@ class Board:
         left, right = res.split('/')
         return self.fill_blank_fields(left) + self.fill_blank_fields(right)
 
+    def print_board(self):
+        count = 0
+        rows = 8
+        print(rows, ')', ' ', end='', sep='')
+
+        for field in product('87654321', 'abcdefgh'):
+            if count and count % 8 == 0:
+                rows -= 1
+                print()
+                print(rows, ')', ' ', end='', sep='')
+
+            print(self.fields[field[1]+field[0]], '', end='')
+            count += 1
+        print()
+        print('-' * 18)
+        print('   A B C D E F G H')
+
     def _init_fields(self, init_board_str):
         index = 0
         for field in product('1234', 'abcdefgh'):
@@ -103,3 +123,6 @@ class Board:
         self.validate_board_str(init_board_str)
         self._init_fields(init_board_str)
 
+
+# b = Board('RNBQKBNR PPPPPPPP/rnbqkbnr pppppppp')
+# b.print_board()
