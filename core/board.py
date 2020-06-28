@@ -21,7 +21,7 @@ class Board:
     fields = {}
 
     @staticmethod
-    def fill_blank_fields(string):
+    def fill_blank_fields(string, ):
         if len(string) < 32:
             return string + '.' * (32 - len(string))
 
@@ -50,6 +50,16 @@ class Board:
         left, right = res.split('/')
         return self.fill_blank_fields(left) + self.fill_blank_fields(right)
 
+    def _init_fields(self, init_board_str):
+        index = 0
+        for field in product('1234', 'abcdefgh'):
+            self.fields[field[1]+field[0]] = init_board_str[index]
+            index += 1
+
+        for field in product('8765', 'abcdefgh'):
+            self.fields[field[1]+field[0]] = init_board_str[index]
+            index += 1
+
     def __init__(self, init_board_str):
         """
         :param init_board_str: get str to initialize chess board
@@ -62,7 +72,7 @@ class Board:
         """
         init_board_str = self.parse_board_str(init_board_str)
         self.validate_board_str(init_board_str)
-
+        self._init_fields(init_board_str)
 
 
 
