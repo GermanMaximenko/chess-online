@@ -58,7 +58,7 @@ class Board:
     def validate_board_str(init_board_str):
         availiable = '.rnbqkp'
         if len(init_board_str) != 64:
-            raise ValueError('Give more than 64 fields to board')
+            raise ValueError('More than 64 fields to board given')
         else:
             for letter in init_board_str:
                 if letter.lower() not in availiable:
@@ -66,7 +66,7 @@ class Board:
 
             count = Counter(init_board_str)
             if count['k'] > 1 or count['K'] > 1:
-                raise ValueError('There are more than 1 king with same color')
+                raise ValueError('More than 1 king with same color given')
 
     def parse_board_str(self, init_board_str):
         init_board_str = del_all_spaces(init_board_str)
