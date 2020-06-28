@@ -6,13 +6,15 @@ N - Knight
 B - Bishop
 Q - Queen
 K - King
+P - Pawn
 . - blank field
 lowercase for black figures
 uppercase for white figures
 """
 
 from utils.utils import del_all_spaces
-
+from itertools import product
+from collections import Counter
 
 
 class Board:
@@ -25,13 +27,17 @@ class Board:
 
     @staticmethod
     def validate_board_str(init_board_str):
-        availiable = '.rnbqk'
+        availiable = '.rnbqkp'
         if len(init_board_str) != 64:
-            raise ValueError('Incorrect init str')
+            raise ValueError('Give more than 64 fields to board')
         else:
             for letter in init_board_str:
-                if letter not in availiable:
-                    raise ValueError('Incorrect init str')
+                if letter.lower() not in availiable:
+                    raise ValueError('Give incorrect symbols')
+
+            count = Counter(init_board_str)
+            if count['k'] > 1 or count['K'] > 1:
+                raise ValueError('There are more than 1 king with same color')
 
     def parse_board_str(self, init_board_str):
         init_board_str = del_all_spaces(init_board_str)
