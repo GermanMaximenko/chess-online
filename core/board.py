@@ -17,6 +17,33 @@ from itertools import product
 from collections import Counter
 
 
+class Field:
+    available_moves = set([])
+    count_attack = 0
+    name = None
+    figure = None
+
+    def __init__(self, name, figure):
+        self.name = name
+        self.figure = figure
+
+    def set_figure(self, figure):
+        self.figure = figure
+
+    def get_figure(self):
+        return self.figure
+
+    def add_available_move(self, available_move):
+        self.available_moves.add(available_move)
+
+    def get_available_moves(self):
+        return self.available_moves
+
+    def reset_available_moves(self):
+        del self.available_moves
+        self.available_moves = set([])
+
+
 class Board:
     fields = {}
 
@@ -53,11 +80,13 @@ class Board:
     def _init_fields(self, init_board_str):
         index = 0
         for field in product('1234', 'abcdefgh'):
-            self.fields[field[1]+field[0]] = init_board_str[index]
+            name_field = field[1]+field[0]
+            self.fields[name_field] = Field(name_field, init_board_str[index])
             index += 1
 
         for field in product('8765', 'abcdefgh'):
-            self.fields[field[1]+field[0]] = init_board_str[index]
+            name_field = field[1]+field[0]
+            self.fields[name_field] = Field(name_field, init_board_str[index])
             index += 1
 
     def __init__(self, init_board_str):
@@ -74,18 +103,3 @@ class Board:
         self.validate_board_str(init_board_str)
         self._init_fields(init_board_str)
 
-
-
-class Field:
-    availible_move = set([])
-    count_attack = 0
-    figure = None
-
-    def __init__(self, figure):
-        self.figure = figure
-
-    def set_figure(self, figure):
-        self.figure = figure
-
-    def get_figure(self):
-        return self.figure
