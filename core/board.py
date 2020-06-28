@@ -8,8 +8,8 @@ Q - Queen
 K - King
 P - Pawn
 . - blank field
-lowercase for black figures
-uppercase for white figures
+lowercase for black pieces
+uppercase for white pieces
 """
 
 from utils.utils import del_all_spaces
@@ -21,17 +21,17 @@ class Field:
     available_moves = set([])
     count_attack = 0
     position = None
-    figure = None
+    piece = None
 
-    def __init__(self, position, figure):
+    def __init__(self, position, piece):
         self.position = position
-        self.figure = figure
+        self.piece = piece
 
-    def set_figure(self, figure):
-        self.figure = figure
+    def set_piece(self, piece):
+        self.piece = piece
 
-    def get_figure(self):
-        return self.figure
+    def get_piece(self):
+        return self.piece
 
     def add_available_move(self, available_move):
         self.available_moves.add(available_move)
@@ -44,7 +44,7 @@ class Field:
         self.available_moves = set([])
 
     def __str__(self):
-        return self.figure
+        return self.piece
 
 
 class Board:
@@ -83,19 +83,19 @@ class Board:
     def print_board(self):
         count = 0
         rows = 8
-        print(rows, ')', ' ', end='', sep='')
+        print(rows, ')', '  ', end='', sep='')
 
         for field in product('87654321', 'abcdefgh'):
             if count and count % 8 == 0:
                 rows -= 1
                 print()
-                print(rows, ')', ' ', end='', sep='')
+                print(rows, ')', '  ', end='', sep='')
 
             print(self.fields[field[1]+field[0]], '', end='')
             count += 1
         print()
-        print('-' * 18)
-        print('   A B C D E F G H')
+        print('-' * 19)
+        print('    a b c d e f g h')
 
     def _init_fields(self, init_board_str):
         index = 0
@@ -124,5 +124,3 @@ class Board:
         self._init_fields(init_board_str)
 
 
-# b = Board('RNBQKBNR PPPPPPPP/rnbqkbnr pppppppp')
-# b.print_board()
