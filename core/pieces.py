@@ -143,9 +143,9 @@ def get_rook_blocks(position, color, fields):
     cols = ' ' + COLUMNS + ' '
     rows = ' ' + ROWS + ' '
     index_col, index_row = cols.index(position[0]), rows.index(position[1])
-
     for k, v in fields:
-        pass
+        if v == '.':
+            continue
 
 
 def get_knight_blocks(position, color,  fields):
