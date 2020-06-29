@@ -12,11 +12,13 @@ def get_piece_color(piece):
     return 'black' if piece.islower() else 'white'
 
 
-def get_rook_steps(position):
+def get_rook_steps(position: str, blocks=None) -> set:
     """
     :param position:
-    :return: return all possible rook steps
+    :param blocks:  possible keys top, right, down, left, all. key->blocked_position
+    :return: return all possible rook steps considering blocks
     """
+
     steps = set()
     steps.update([el[0] + el[1] for el in product(position[0], ROWS)])
     steps.update([el[0] + el[1] for el in product(COLUMNS, position[1])])
@@ -24,11 +26,13 @@ def get_rook_steps(position):
     return steps
 
 
-def get_knight_steps(position):
+def get_knight_steps(position: str, blocks=None) -> set:
     """
     :param position:
+    :param blocks:  possible keys top, right, down, left, all. key->blocked_position
     :return: return all possible knight steps
     """
+
     steps = set()
     cols = '  ' + COLUMNS + '  '
     rows = '  ' + ROWS + '  '
@@ -43,9 +47,10 @@ def get_knight_steps(position):
     return steps
 
 
-def get_bishop_steps(position):
+def get_bishop_steps(position: str, blocks=None) -> set:
     """
     :param position:
+    :param blocks:  possible keys top, right, down, left, all. key->blocked_position
     :return: return all possible bishop steps
     """
     steps = set()
@@ -76,17 +81,19 @@ def get_bishop_steps(position):
     return steps
 
 
-def get_queen_steps(position):
+def get_queen_steps(position: str, blocks_rook=None, blocks_bish=None) -> set:
     """
     :param position:
+    :param blocks:  possible keys top, right, down, left, all. key->blocked_position
     :return: return all possible queen steps
     """
-    return get_rook_steps(position) | get_bishop_steps(position)
+    return get_rook_steps(position, blocks_rook) | get_bishop_steps(position, blocks_bish)
 
 
-def get_king_steps(position, color):
+def get_king_steps(position: str, color: str, blocks=None) -> set:
     """
     :param position:
+    :param blocks:  possible keys top, right, down, left, all. key->blocked_position
     :return: return all possible king steps
     """
     steps = set()
@@ -105,9 +112,10 @@ def get_king_steps(position, color):
     return steps
 
 
-def get_pawn_steps(position, color):
+def get_pawn_steps(position: str, color: str, blocks=None) -> set:
     """
     :param position:
+    :param blocks:  possible keys top, right, down, left, all. key->blocked_position
     :return: return all possible pawn steps
     """
     steps = set()
@@ -131,19 +139,49 @@ def get_pawn_steps(position, color):
     return steps
 
 
-def get_piece_step(piece, position):
+def get_rook_blocks(position, color, fields):
+    cols = ' ' + COLUMNS + ' '
+    rows = ' ' + ROWS + ' '
+    index_col, index_row = cols.index(position[0]), rows.index(position[1])
+
+    for k, v in fields:
+        pass
+
+
+def get_knight_blocks(position, color,  fields):
+    pass
+
+
+def get_bishop_blocks(position, color,  fields):
+    pass
+
+
+def get_queen_blocks(position, color,  fields):
+    pass
+
+
+def get_king_blocks(position, color,  fields):
+    pass
+
+
+def get_pawn_blocks(position, color,  fields):
+    pass
+
+
+def get_piece_step(piece, position, fields):
     color = get_piece_color(piece)
     piece = piece.lower()
     if piece == 'p':
-        return get_pawn_steps(position, color)
+        return get_pawn_steps(position, color, get_pawn_blocks(position, fields, color))
     elif piece == 'r':
-        return get_rook_steps(position)
+        return get_rook_steps(position, get_rook_blocks(position, fields, color))
     elif piece == 'n':
-        return get_knight_steps(position)
+        return get_knight_steps(position, get_knight_blocks(position, fields, color))
     elif piece == 'b':
-        return get_bishop_steps(position)
+        return get_bishop_steps(position, get_bishop_blocks(position, fields, color))
     elif piece == 'q':
-        return get_queen_steps(position)
+        rook_blocks = get_rook_blocks(position, fields, color)
+        bish_blocks = get_bishop_blocks(position, fields, color)
+        return get_queen_steps(position, rook_blocks, bish_blocks)
     elif piece == 'k':
-        return get_king_steps(position, color)
-
+        return get_king_steps(position, color, get_king_blocks(position, fields, color))

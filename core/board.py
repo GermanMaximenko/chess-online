@@ -108,6 +108,12 @@ class Board:
             self.fields[name_field] = Field(name_field, init_board_str[index])
             index += 1
 
+    def reconfigure_fields(self):
+        pass
+
+    def move(self, start, end):
+        pass
+
     def __init__(self, init_board_str):
         """
         :param init_board_str: get str to initialize chess board
