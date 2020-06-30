@@ -1,11 +1,16 @@
 from itertools import product
+from collections import defaultdict
 
 COLUMNS = 'abcdefgh'
 ROWS = '12345678'
 
 
-def get_position_indeces(position):
-    return COLUMNS.index(position[0]), ROWS.index(position[1])
+def get_position_indices(position, cols=None, rows=None):
+    if cols is None:
+        cols = COLUMNS
+    if rows is None:
+        rows = ROWS
+    return cols.index(position[0]), rows.index(position[1])
 
 
 def get_piece_color(piece):
@@ -54,9 +59,9 @@ def get_bishop_steps(position: str, blocks=None) -> set:
     :return: return all possible bishop steps
     """
     steps = set()
-    index_col, index_row = get_position_indeces(position)
+    index_col, index_row = get_position_indices(position)
 
-    def next_indeces(mode, col, row):
+    def next_indices(mode, col, row):
         if mode == 0:
             col -= 1
             row += 1
@@ -72,11 +77,11 @@ def get_bishop_steps(position: str, blocks=None) -> set:
         return col, row
 
     for i in range(4):
-        index_col, index_row = next_indeces(i, index_col, index_row)
+        index_col, index_row = next_indices(i, index_col, index_row)
         while 0 <= index_col < 8 and 0 <= index_row < 8:
             steps.add(COLUMNS[index_col] + ROWS[index_row])
-            index_col, index_row = next_indeces(i, index_col, index_row)
-        index_col, index_row = get_position_indeces(position)
+            index_col, index_row = next_indices(i, index_col, index_row)
+        index_col, index_row = get_position_indices(position)
 
     return steps
 
@@ -97,7 +102,7 @@ def get_king_steps(position: str, color: str, blocks=None) -> set:
     :return: return all possible king steps
     """
     steps = set()
-    index_col, index_row = get_position_indeces(position)
+    index_col, index_row = get_position_indices(position)
     for i in range(-1, 2):
         for j in range(-1, 2):
             if 0 <= index_col + i < 8 and 0 <= index_row - j < 8:
@@ -119,7 +124,7 @@ def get_pawn_steps(position: str, color: str, blocks=None) -> set:
     :return: return all possible pawn steps
     """
     steps = set()
-    index_col, index_row = get_position_indeces(position)
+    index_col, index_row = get_position_indices(position)
 
     if color == 'white':
 
@@ -142,11 +147,57 @@ def get_pawn_steps(position: str, color: str, blocks=None) -> set:
 def get_rook_blocks(position, color, fields):
     cols = ' ' + COLUMNS + ' '
     rows = ' ' + ROWS + ' '
-    index_col, index_row = cols.index(position[0]), rows.index(position[1])
-    for k, v in fields:
-        if v == '.':
-            continue
+    index_col, index_row = get_position_indices(position, cols, rows)
+    rook_steps = get_rook_steps(position)
 
+    def get_direction(f):
+        index_col_field, index_row_field = get_position_indices(position, cols, rows)
+        if index_col_field < index_col:
+            return 'left'
+        elif index_col_field > index_col:
+            return 'right'
+        elif index_row_field > index_row:
+            return 'top'
+        elif index_row_field < index_row:
+            return 'bottom'
+
+    def get_blocked_field(_field, _piece):
+        index_col_field, index_row_field = get_position_indices(_field, cols, rows)
+        piece_color = get_piece_color(_piece)
+        direction = get_direction(_field)
+        blocked_field = None
+
+        if piece_color == color and _field in rook_steps:
+            blocked_field = (index_col_field, index_row_field)
+
+        elif piece_color != color and _field in rook_steps:
+
+            if direction == 'left':
+                index_col_field -= 1
+            elif direction == 'right':
+                index_col_field += 1
+            elif direction == 'top':
+                index_row_field += 1
+            elif direction == 'bottom':
+                index_row_field -= 1
+
+            if index_row_field != 0 and index_col_field != 0:
+                blocked_field = (index_col_field, index_row_field)
+        return direction, blocked_field
+
+    blocked = {}
+    for field, piece in fields:
+        if piece == '.' or field == position:
+            continue
+        direc, block = get_blocked_field(field, piece)
+        if block:
+            if blocked.get(direc):
+                #разбить по направленияс
+                if (block[0] + block[1]) < (blocked['direc'][0] + blocked['direc'][1]):
+                    blocked[direc] = block
+            else:
+                blocked[direc] = block
+        # преобразовать в строку
 
 def get_knight_blocks(position, color,  fields):
     pass
